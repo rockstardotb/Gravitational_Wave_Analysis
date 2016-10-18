@@ -1,0 +1,107 @@
+# Standard python numerical analysis imports:
+import numpy as np
+from scipy import signal
+from scipy.interpolate import interp1d
+from scipy.signal import butter, filtfilt, iirdesign, zpk2tf, freqz
+
+# the ipython magic below must be commented out in the .py file, since it doesn$
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+import argparse
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+parser = argparse.ArgumentParser() 
+parser.add_argument('-s',    default='Strain1.txt',    help='text file with hdf5 data')
+args=parser.parse_args()
+S=args.s
+time=[]
+strain=[]
+def read(x):
+	global S,time,strain
+	plt.rcParams['agg.path.chunksize'] = 10000
+
+	i=0
+
+	with open(S, 'r') as f:
+		for row in f:
+			if row=="NaN":
+				i+=1
+			else:
+				time.append(float(0.00024414063955*i))
+				strain.append(float(row))
+				i+=1
+	plt.plot(time,strain)
+	return time
+	return strain
+read(S)
+plt.show()
+fs=32
+dt=time[1]-time[0]
+# number of sample for the fast fourier transform:
+NFFT = 1*fs
+fmin = 10
+fmax = 2000
+Pxx_H1, freqs = mlab.psd(strain, Fs=fs, NFFT=NFFT)
+#Pxx_L1, freqs = mlab.psd(strain, Fs = fs, NFFT = NFFT)
+# We will use interpolations of the ASDs computed above for whitening:
+# Below, data less than zero is being created in the array psd_H1.
+# Consider writing a loop to change values less than zero to zero.
+psd_H1 = interp1d(freqs, Pxx_H1, fill_value='extrapolate')#,bounds_error=False)
+#psd_L1 = interp1d(freqs, Pxx_L1)
+
+# plot the ASDs:
+plt.figure()
+plt.loglog(freqs, np.sqrt(Pxx_H1),'r',label='H1 strain')
+#plt.loglog(freqs, np.sqrt(Pxx_L1),'g',label='L1 strain')
+plt.axis([fmin, fmax, 1e-24, 1e-19])
+plt.grid('on')
+plt.ylabel('ASD (strain/rtHz)')
+plt.xlabel('Freq (Hz)')
+plt.legend(loc='upper center')
+plt.title('Advanced LIGO strain data')
+plt.savefig('New_ASDs.png')
+plt.show()
+
+
+# function to writen data
+def whiten(strain, interp_psd, dt):
+    Nt = len(strain)
+    freqs = np.fft.rfftfreq(Nt, dt)
+    print(freqs)
+
+    # whitening: transform to freq domain, divide by asd, then transform back,
+    # taking care to get normalization right.
+    hf = np.fft.rfft(strain)
+    print(interp_psd(freqs))
+    white_hf = hf / (np.sqrt(interp_psd(freqs) /dt/2.))
+    white_ht = np.fft.irfft(white_hf, n=Nt)
+    return white_ht
+
+# now whiten the data from H1 and L1, and also the NR template:
+print (psd_H1)
+strain_H1_whiten = whiten(strain,psd_H1,dt)
+#strain_L1_whiten = whiten(strain_L1,psd_L1,dt)
+#NR_H1_whiten = whiten(NR_H1,psd_H1,dt)
+
+# We need to suppress the high frequencies with some bandpassing:
+bb, ab = butter(4, [10.0*2/fs,16*2/fs], btype='band')
+strain_H1_whitenbp = filtfilt(bb, ab, strain_H1_whiten)
+#strain_L1_whitenbp = filtfilt(bb, ab, strain_L1_whiten)
+#NR_H1_whitenbp = filtfilt(bb, ab, NR_H1_whiten)
+# plot the data after whitening:
+# first, shift L1 by 7 ms, and invert. See the GW150914 detection paper for why!
+#strain_L1_shift = -np.roll(strain_L1_whitenbp,int(0.007*fs))
+
+print(strain_H1_whitenbp)
+plt.plot(time,strain_H1_whitenbp,'r',label='H1 strain')
+#plt.plot(time-tevent,strain_L1_shift,'g',label='L1 strain')
+#plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
+plt.xlim([0,32])
+plt.ylim([-4,4])
+plt.xlabel('time (s)')
+plt.ylabel('whitented strain')
+plt.legend(loc='lower left')
+plt.title('Advanced LIGO WHITENED strain data')
+plt.savefig('NEW_strain_whitened.png')
+plt.show()
