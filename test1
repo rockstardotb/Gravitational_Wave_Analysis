@@ -47,7 +47,7 @@ Pxx_H1, freqs = mlab.psd(strain, Fs=fs, NFFT=NFFT)
 # We will use interpolations of the ASDs computed above for whitening:
 # Below, data less than zero is being created in the array psd_H1.
 # Consider writing a loop to change values less than zero to zero.
-psd_H1 = interp1d(freqs, Pxx_H1, fill_value='extrapolate')#,bounds_error=False)
+psd_H1 = interp1d(freqs, Pxx_H1,copy= True,bounds_error=False,fill_value=0)#,bounds_error=False)
 #psd_L1 = interp1d(freqs, Pxx_L1)
 
 # plot the ASDs:
@@ -68,38 +68,39 @@ plt.show()
 def whiten(strain, interp_psd, dt):
     Nt = len(strain)
     freqs = np.fft.rfftfreq(Nt, dt)
-<<<<<<< HEAD
-=======
+#<<<<<<< HEAD
+#=======
     print(freqs)
->>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
+#>>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
 
     # whitening: transform to freq domain, divide by asd, then transform back,
     # taking care to get normalization right.
     hf = np.fft.rfft(strain)
-<<<<<<< HEAD
+#<<<<<<< HEAD
     #**********************************************************#
     #CHANGES: I am making an array to get rid of negative values
     #produced by "interp_psd(freqs)"
-    a=[]
-    a=interp_psd(freqs)
-    for index in a:
-        if a[index] < 0:
-            a[index]=0
-        else:
-            a[index]=a[index]
+   # a=[]
+   # a=interp_psd(freqs)
+   # index=0
+   # for index in a:
+   #     if a[index] < 0:
+   #         a[index]=0
+   #         index+=1
+   #     else:
+   #         a[index]=a[index]
+   #         index+=1
     print(interp_psd(freqs))
-    print(a)
-    white_hf = hf / (np.sqrt(a/dt/2.))
+    white_hf = hf / (np.sqrt(interp_psd(freqs)/dt/2.))
     white_ht = np.fft.irfft(white_hf, n=Nt)
     return white_ht
     #***********************************************************#
-=======
-    print(interp_psd(freqs))
+#=======
     white_hf = hf / (np.sqrt(interp_psd(freqs) /dt/2.))
     white_ht = np.fft.irfft(white_hf, n=Nt)
     return white_ht
 
->>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
+#>>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
 # now whiten the data from H1 and L1, and also the NR template:
 print (psd_H1)
 strain_H1_whiten = whiten(strain,psd_H1,dt)
