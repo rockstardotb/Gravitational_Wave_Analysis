@@ -68,10 +68,15 @@ plt.show()
 def whiten(strain, interp_psd, dt):
     Nt = len(strain)
     freqs = np.fft.rfftfreq(Nt, dt)
+<<<<<<< HEAD
+=======
+    print(freqs)
+>>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
 
     # whitening: transform to freq domain, divide by asd, then transform back,
     # taking care to get normalization right.
     hf = np.fft.rfft(strain)
+<<<<<<< HEAD
     #**********************************************************#
     #CHANGES: I am making an array to get rid of negative values
     #produced by "interp_psd(freqs)"
@@ -88,6 +93,13 @@ def whiten(strain, interp_psd, dt):
     white_ht = np.fft.irfft(white_hf, n=Nt)
     return white_ht
     #***********************************************************#
+=======
+    print(interp_psd(freqs))
+    white_hf = hf / (np.sqrt(interp_psd(freqs) /dt/2.))
+    white_ht = np.fft.irfft(white_hf, n=Nt)
+    return white_ht
+
+>>>>>>> fc2d9bf4c6dfdd62b225419bd3593c931c5b8bda
 # now whiten the data from H1 and L1, and also the NR template:
 print (psd_H1)
 strain_H1_whiten = whiten(strain,psd_H1,dt)
