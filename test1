@@ -47,7 +47,7 @@ Pxx_H1, freqs = mlab.psd(strain, Fs=fs, NFFT=NFFT)
 # We will use interpolations of the ASDs computed above for whitening:
 # Below, data less than zero is being created in the array psd_H1.
 # Consider writing a loop to change values less than zero to zero.
-psd_H1 = interp1d(freqs, Pxx_H1,copy= True,bounds_error=False,fill_value=0)#,bounds_error=False)
+psd_H1 = interp1d(freqs, Pxx_H1,copy= True,bounds_error=False,fill_value=0.1*10**(-75))#,bounds_error=False)
 #psd_L1 = interp1d(freqs, Pxx_L1)
 
 # plot the ASDs:
