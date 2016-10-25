@@ -12,13 +12,16 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 parser = argparse.ArgumentParser() 
-parser.add_argument('-s',    default='Strain1.txt',    help='text file with hdf5 data')
+parser.add_argument('-h1',    default='StrainH1.txt',    help='text file with hdf5 data')
+parser.add_argument('-l1',    default='StrainL1.txt',    help='text file with hdf5 data')
 args=parser.parse_args()
-S=args.s
+H1=args.h1
+S1=args.l1
 time=[]
-strain=[]
-def read(x):
-	global S,time,strain
+strainH1=[]
+strainL1 = []
+def readH1(x):
+	global S,time,strainH1
 	plt.rcParams['agg.path.chunksize'] = 10000
 
 	i=0
@@ -29,31 +32,49 @@ def read(x):
 				i+=1
 			else:
 				time.append(float(0.00024414063955*i))
-				strain.append(float(row))
+				strainH1.append(float(row))
 				i+=1
-	plt.plot(time,strain)
+	plt.plot(time,strainH1)
 	return time
-	return strain
-read(S)
+	return strainH1
+def readL1(x):
+        global S,time,strainL1
+        plt.rcParams['agg.path.chunksize'] = 10000
+
+        i=0
+
+        with open(S, 'r') as f:
+                for row in f:
+                        if row=="NaN":
+                                i+=1
+                        else:
+                                time.append(float(0.00024414063955*i))
+                                strainL1.append(float(row))
+                                i+=1
+        plt.plot(time,strain)
+        return time
+        return strainL1
+read(H1)
+read(L1)
 plt.show()
-fs=32
+fs= 32 # number of seconds in sample
 dt=time[1]-time[0]
 # number of sample for the fast fourier transform:
 NFFT = 1*fs
 fmin = 10
 fmax = 2000
 Pxx_H1, freqs = mlab.psd(strain, Fs=fs, NFFT=NFFT)
-#Pxx_L1, freqs = mlab.psd(strain, Fs = fs, NFFT = NFFT)
+Pxx_L1, freqs = mlab.psd(strain, Fs = fs, NFFT = NFFT)
 # We will use interpolations of the ASDs computed above for whitening:
 # Below, data less than zero is being created in the array psd_H1.
 # Consider writing a loop to change values less than zero to zero.
 psd_H1 = interp1d(freqs, Pxx_H1,copy= True,bounds_error=False,fill_value=0.1*10**(-75))#,bounds_error=False)
-#psd_L1 = interp1d(freqs, Pxx_L1)
+psd_L1 = interp1d(freqs, Pxx_L1)
 
 # plot the ASDs:
 plt.figure()
 plt.loglog(freqs, np.sqrt(Pxx_H1),'r',label='H1 strain')
-#plt.loglog(freqs, np.sqrt(Pxx_L1),'g',label='L1 strain')
+plt.loglog(freqs, np.sqrt(Pxx_L1),'g',label='L1 strain')
 plt.axis([fmin, fmax, 1e-24, 1e-19])
 plt.grid('on')
 plt.ylabel('ASD (strain/rtHz)')
@@ -101,7 +122,7 @@ strain_H1_whiten = whiten(strain,psd_H1,dt)
 #NR_H1_whiten = whiten(NR_H1,psd_H1,dt)
 
 # We need to suppress the high frequencies with some bandpassing:
-bb, ab = butter(4, [10.0*2/fs,16*2/fs], btype='band')
+bb, ab = butter(4, [10.0*2/fs,16*2/fs], btype='band') # fiddle with numbers instead of '16'
 strain_H1_whitenbp = filtfilt(bb, ab, strain_H1_whiten)
 #strain_L1_whitenbp = filtfilt(bb, ab, strain_L1_whiten)
 #NR_H1_whitenbp = filtfilt(bb, ab, NR_H1_whiten)
