@@ -82,7 +82,7 @@ plt.ylabel('ASD (strain/rtHz)')
 plt.xlabel('Freq (Hz)')
 plt.legend(loc='upper center')
 plt.title('Advanced LIGO strain data')
-plt.savefig('New_ASDs.png')
+plt.savefig('New_ASDs'+H1+L1+'.png')
 plt.show()
 
 
