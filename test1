@@ -57,8 +57,12 @@ def readL1(x):
         return strainL1
 readH1(H1)
 readL1(L1)
+plt.xlabel('time (s)')
+plt.ylabel('strain')
+plt.legend(loc='lower right')
+plt.title('Strain vs Time')
 plt.show()
-fs= 4096 # number of seconds in sample
+fs= 4096
 dt=timeH1[1]-timeH1[0]
 # number of sample for the fast fourier transform:
 NFFT = 1*fs
@@ -124,7 +128,7 @@ print(strain_H1_whitenbp)
 plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
 plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
 #plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
-plt.xlim([0,fs])
+plt.xlim([0,32])
 plt.ylim([-4,4])
 plt.xlabel('time (s)')
 plt.ylabel('whitented strain')
