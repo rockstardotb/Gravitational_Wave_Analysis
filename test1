@@ -133,16 +133,42 @@ plt.legend(loc='lower left')
 plt.title('Advanced LIGO WHITENED strain data')
 plt.savefig('NEW_strain_whitened'+H1+L1+'.png')
 plt.show()
-
+time_start=0
+time_end=0
 if np.sum(timeH1)<=2100000:
+	index=1000
 	for x,y,x1,y1 in zip(timeH1[1000:120000],strain_H1_whitenbp[1000:120000],timeL1[1000:120000],strain_L1_shift[1000:120000]):
 		if y>1.75 and y1>1.75:
 			print('H1: (',x,',',y,')\tL1:(',x1,',',y1,')')
+			if time_start==0:
+				time_start=index-100
+			time_end=index+100
+			index+=1
 		else:
+			index+=1
 			continue
 else:
+        index=5000000
         for x,y,x1,y1 in zip(timeH1[5000000:11000000],strain_H1_whitenbp[5000000:11000000],timeL1[5000000:11000000],strain_L1_shift[5000000:11000000]):
                 if y>1.75 and y1>1.75:
                         print('H1: (',x,',',y,')\tL1:(',x1,',',y1,')')
+                        if time_start==0:
+                                time_start=index-100
+                        time_end=index+100
+                        index+=1
                 else:
+                        index+=1
                         continue
+print(time_start*0.000244,'  ',time_end*0.000244)
+if time_end > time_start:
+	plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
+	plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
+	#plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
+	plt.xlim((time_start*0.000244),(time_end*0.000244))
+	plt.ylim([-4,4])
+	plt.xlabel('time (s)')
+	plt.ylabel('whitented strain')
+	plt.legend(loc='lower left')
+	plt.title('Advanced LIGO WHITENED strain data')
+	plt.savefig('NEW_strain_whitened'+H1+L1+'.png')
+	plt.show()
