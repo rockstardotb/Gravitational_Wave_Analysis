@@ -119,11 +119,13 @@ strain_L1_whitenbp = filtfilt(bb, ab, strain_L1_whiten)
 # first, shift L1 by 7 ms, and invert. See the GW150914 detection paper for why!
 strain_L1_shift = -np.roll(strain_L1_whitenbp,int(0.007*fs))
 
-print(type(strain_H1_whitenbp))
 plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
 plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
 #plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
-plt.xlim([0,32])
+if np.sum(timeH1)<=2100000:
+	plt.xlim([0,32])
+else:
+	plt.xlim([0,4096])
 plt.ylim([-4,4])
 plt.xlabel('time (s)')
 plt.ylabel('whitented strain')
