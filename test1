@@ -159,7 +159,6 @@ else:
                 else:
                         index+=1
                         continue
-print(time_start*0.000244,'  ',time_end*0.000244)
 if time_end > time_start:
 	plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
 	plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
