@@ -35,7 +35,7 @@ def readH1(x):
 				timeH1.append(float(0.00024414063955*i))
 				strainH1.append(float(row))
 				i+=1
-	plt.plot(timeH1,strainH1)
+	plt.plot(timeH1,strainH1,label='H1 strain')
 	return timeH1
 	return strainH1
 def readL1(x):
@@ -52,16 +52,17 @@ def readL1(x):
                                 timeL1.append(float(0.00024414063955*i))
                                 strainL1.append(float(row))
                                 i+=1
-        plt.plot(timeL1,strainL1)
+        plt.plot(timeL1,strainL1,label='L1 strain')
         return timeL1
         return strainL1
 readH1(H1)
 readL1(L1)
-plt.xlabel('time (s)')
-plt.ylabel('strain')
-plt.legend(loc='lower right')
-plt.title('Strain vs Time')
-plt.show()
+#plt.xlabel('time (s)')
+#plt.ylabel('strain')
+#plt.legend(loc='lower right')
+#plt.title('Strain vs Time')
+#plt.savefig('New_Strain_v_time'+H1+L1+'.png')
+#plt.show()
 fs= 4096
 dt=timeH1[1]-timeH1[0]
 # number of sample for the fast fourier transform:
@@ -77,17 +78,17 @@ psd_H1 = interp1d(freqs, Pxx_H1,copy= True,bounds_error=False,fill_value=0.1*10*
 psd_L1 = interp1d(freqs, Pxx_L1,copy= True,bounds_error=False,fill_value=0.1*10**(-75))
 
 # plot the ASDs:
-plt.figure()
-plt.loglog(freqs, np.sqrt(Pxx_H1),'r',label='H1 strain')
-plt.loglog(freqs, np.sqrt(Pxx_L1),'g',label='L1 strain')
-plt.axis([fmin, fmax, 1e-24, 1e-19])
-plt.grid('on')
-plt.ylabel('ASD (strain/rtHz)')
-plt.xlabel('Freq (Hz)')
-plt.legend(loc='upper center')
-plt.title('Advanced LIGO strain data')
-plt.savefig('New_ASDs'+H1+L1+'.png')
-plt.show()
+#plt.figure()
+#plt.loglog(freqs, np.sqrt(Pxx_H1),'r',label='H1 strain')
+#plt.loglog(freqs, np.sqrt(Pxx_L1),'g',label='L1 strain')
+#plt.axis([fmin, fmax, 1e-24, 1e-19])
+#plt.grid('on')
+#plt.ylabel('ASD (strain/rtHz)')
+#plt.xlabel('Freq (Hz)')
+#plt.legend(loc='upper center')
+#plt.title('Advanced LIGO strain data')
+#plt.savefig('New_ASDs'+H1+L1+'.png')
+#plt.show()
 
 
 # function to writen data
@@ -108,7 +109,7 @@ def whiten(strain, interp_psd, dt):
     return white_ht
 
 # now whiten the data from H1 and L1, and also the NR template:
-print (psd_H1)
+#print (psd_H1)
 strain_H1_whiten = whiten(strainH1,psd_H1,dt)
 strain_L1_whiten = whiten(strainL1,psd_L1,dt)
 #NR_H1_whiten = whiten(NR_H1,psd_H1,dt)
@@ -122,17 +123,18 @@ strain_L1_whitenbp = filtfilt(bb, ab, strain_L1_whiten)
 # first, shift L1 by 7 ms, and invert. See the GW150914 detection paper for why!
 strain_L1_shift = -np.roll(strain_L1_whitenbp,int(0.007*fs))
 
-print(bb)
-print(ab)
+#print(bb)
+#print(ab)
 print(strain_H1_whitenbp)
-plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
-plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
+type(strain_H1_whitenbp)
+#plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
+#plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
 #plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
-plt.xlim([0,32])
-plt.ylim([-4,4])
-plt.xlabel('time (s)')
-plt.ylabel('whitented strain')
-plt.legend(loc='lower left')
-plt.title('Advanced LIGO WHITENED strain data')
-plt.savefig('NEW_strain_whitened.png')
-plt.show()
+#plt.xlim([0,32])
+#plt.ylim([-4,4])
+#plt.xlabel('time (s)')
+#plt.ylabel('whitented strain')
+#plt.legend(loc='lower left')
+#plt.title('Advanced LIGO WHITENED strain data')
+#plt.savefig('NEW_strain_whitened.png')
+#plt.show()
