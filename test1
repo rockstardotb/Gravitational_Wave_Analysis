@@ -1,3 +1,6 @@
+import os
+os.system('h5dump -d /strain/Strain -y -o H1_931160064.txt H-H1_LOSC_4_V1-931160064-4096.hdf5')
+os.system('h5dump -d /strain/Strain -y -o L1_931160064.txt L-L1_LOSC_4_V1-931160064-4096.hdf5')
 # Standard python numerical analysis imports:
 import numpy as np
 from scipy import signal
@@ -12,8 +15,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 parser = argparse.ArgumentParser() 
-parser.add_argument('-h1',    default='StrainH1.txt',    help='text file with hdf5 data')
-parser.add_argument('-l1',    default='StrainL1.txt',    help='text file with hdf5 data')
+parser.add_argument('-h1',    default='H1_931160064.txt',    help='text file with hdf5 data')
+parser.add_argument('-l1',    default='L1_931160064.txt',    help='text file with hdf5 data')
 args=parser.parse_args()
 H1=args.h1
 L1=args.l1
@@ -29,17 +32,14 @@ def readH1(x):
 
 	with open(H1, 'r') as f:
 		for row in f:
-			if row=="NaN":
+			if row=="nan":
 				i+=1
 			else:
 				timeH1.append(float(0.00024414063955*i))
 				strainH1.append(float(row))
 				i+=1
-<<<<<<< HEAD
 	plt.plot(timeH1,strainH1,label='H1 strain')
-=======
 #	plt.plot(timeH1,strainH1)
->>>>>>> 0fe58133fb97274a37aaa98e8a9442648574f31d
 	return timeH1
 	return strainH1
 def readL1(x):
@@ -50,22 +50,18 @@ def readL1(x):
 
         with open(L1, 'r') as f:
                 for row in f:
-                        if row=="NaN":
+                        if row=="nan":
                                 i+=1
                         else:
                                 timeL1.append(float(0.00024414063955*i))
                                 strainL1.append(float(row))
                                 i+=1
-<<<<<<< HEAD
         plt.plot(timeL1,strainL1,label='L1 strain')
-=======
 #        plt.plot(timeL1,strainL1)
->>>>>>> 0fe58133fb97274a37aaa98e8a9442648574f31d
         return timeL1
         return strainL1
 readH1(H1)
 readL1(L1)
-<<<<<<< HEAD
 #plt.xlabel('time (s)')
 #plt.ylabel('strain')
 #plt.legend(loc='lower right')
@@ -73,11 +69,9 @@ readL1(L1)
 #plt.savefig('New_Strain_v_time'+H1+L1+'.png')
 #plt.show()
 fs= 4096
-=======
 #plt.savefig('raw'+H1+L1+'.png')
 #plt.show()
 fs= 4096 # number of seconds in sample
->>>>>>> 0fe58133fb97274a37aaa98e8a9442648574f31d
 dt=timeH1[1]-timeH1[0]
 # number of sample for the fast fourier transform:
 NFFT = 1*fs
@@ -137,7 +131,6 @@ strain_L1_whitenbp = filtfilt(bb, ab, strain_L1_whiten)
 # first, shift L1 by 7 ms, and invert. See the GW150914 detection paper for why!
 strain_L1_shift = -np.roll(strain_L1_whitenbp,int(0.007*fs))
 
-<<<<<<< HEAD
 #print(bb)
 #print(ab)
 print(strain_H1_whitenbp)
@@ -153,7 +146,6 @@ type(strain_H1_whitenbp)
 #plt.title('Advanced LIGO WHITENED strain data')
 #plt.savefig('NEW_strain_whitened.png')
 #plt.show()
-=======
 plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
 plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
 #plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
@@ -217,4 +209,3 @@ if time_end > time_start:
 	plt.title('Advanced LIGO WHITENED strain data')
 	plt.savefig('NEW_strain_whitened'+H1+L1+'.png')
 	plt.show()
->>>>>>> 0fe58133fb97274a37aaa98e8a9442648574f31d
