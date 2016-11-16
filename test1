@@ -18,8 +18,8 @@ parser.add_argument('-l1',    default='L-L1_LOSC_4_V1-968863744-4096.hdf5',    h
 args=parser.parse_args()
 H1=args.h1
 L1=args.l1
-os.system("h5dump -d /strain/Strain -y -o "+H1+".txt "+H1)
-os.system("h5dump -d /strain/Strain -y -o "+L1+".txt "+L1)
+os.system("h5dump -d /strain/Strain -y -w 1 -o "+H1+".txt "+H1)
+os.system("h5dump -d /strain/Strain -y -w 1 -o "+L1+".txt "+L1)
 timeH1=[]
 timeL1 = []
 strainH1 = []
@@ -59,7 +59,7 @@ def readL1(x):
         return strainL1
 readH1(H1)
 readL1(L1)
-#plt.savefig('raw'+H1+L1+'.png')
+#plt.savefig('raw'+H1+'.png')
 #plt.show()
 fs= 4096 # number of seconds in sample
 dt=timeH1[1]-timeH1[0]
@@ -85,7 +85,7 @@ psd_L1 = interp1d(freqs, Pxx_L1,copy= True,bounds_error=False,fill_value=0.1*10*
 #plt.xlabel('Freq (Hz)')
 #plt.legend(loc='upper center')
 #plt.title('Advanced LIGO strain data')
-#plt.savefig('New_ASDs'+H1+L1+'.png')
+#plt.savefig('New_ASDs'+H1+'.png')
 #plt.show()
 
 
@@ -107,7 +107,6 @@ def whiten(strain, interp_psd, dt):
     return white_ht
 
 # now whiten the data from H1 and L1, and also the NR template:
-print (psd_H1)
 strain_H1_whiten = whiten(strainH1,psd_H1,dt)
 strain_L1_whiten = whiten(strainL1,psd_L1,dt)
 #NR_H1_whiten = whiten(NR_H1,psd_H1,dt)
@@ -133,7 +132,7 @@ plt.xlabel('time (s)')
 plt.ylabel('whitented strain')
 plt.legend(loc='lower left')
 plt.title('Advanced LIGO WHITENED strain data')
-plt.savefig('NEW_strain_whitened'+H1+L1+'.png')
+plt.savefig('NEW_strain_whitened'+H1+'.png')
 plt.show()
 time_start=0
 time_end=0
@@ -182,5 +181,5 @@ if time_end > time_start:
 	plt.ylabel('whitented strain')
 	plt.legend(loc='lower left')
 	plt.title('Advanced LIGO WHITENED strain data')
-	plt.savefig('NEW_strain_whitened'+H1+L1+'.png')
+	plt.savefig('ZoomedNEW_strain_whitened'+H1+'.png')
 	plt.show()
