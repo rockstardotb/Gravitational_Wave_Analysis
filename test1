@@ -22,6 +22,8 @@ os.system("h5dump -d /strain/Strain -y -w 1 -o "+H1+".txt "+H1)
 os.system("h5dump -d /strain/Strain -y -w 1 -o "+L1+".txt "+L1)
 timeH1=[]
 timeL1 = []
+comma_strainH1=[]
+comma_strainL1=[]
 strainH1 = []
 strainL1 = []
 def readH1(x):
@@ -31,11 +33,20 @@ def readH1(x):
 	i=0
 	with open(H1+".txt", 'r') as f:
 		for row in f:
+			if row==' ':
+				continue
+			else:
+				comma_strainH1.append(row.strip())
+		filter(None, comma_strainH1)
+		os.system("rm "+H1+".txt")	
+		for row in comma_strainH1:
 			if row=="NaN":
 				i+=1
+			elif row=="":
+				continue
 			else:
 				timeH1.append(float(0.00024414063955*i))
-				strainH1.append(float(row))
+				strainH1.append(float(row.strip(',')))
 				i+=1
 #	plt.plot(timeH1,strainH1)
 	return timeH1
@@ -48,11 +59,17 @@ def readL1(x):
 
         with open(L1+".txt", 'r') as f:
                 for row in f:
+                        comma_strainL1.append(row.strip())
+                filter(None, comma_strainL1)
+                os.system("rm "+L1+".txt")
+                for row in comma_strainL1:
                         if row=="NaN":
                                 i+=1
+                        elif row=="":
+                                continue
                         else:
                                 timeL1.append(float(0.00024414063955*i))
-                                strainL1.append(float(row))
+                                strainL1.append(float(row.strip(',')))
                                 i+=1
 #        plt.plot(timeL1,strainL1)
         return timeL1
@@ -183,3 +200,5 @@ if time_end > time_start:
 	plt.title('Advanced LIGO WHITENED strain data')
 	plt.savefig('ZoomedNEW_strain_whitened'+H1+'.png')
 	plt.show()
+os.system("rm "+H1)
+os.system("rm "+L1)
