@@ -1,3 +1,4 @@
+
 import os
 # Standard python numerical analysis imports:
 import numpy as np
@@ -13,11 +14,18 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 parser = argparse.ArgumentParser() 
-parser.add_argument('-h1',    default='H-H1_LOSC_4_V1-968863744-4096.hdf5',    help='text file with hdf5 data')
-parser.add_argument('-l1',    default='L-L1_LOSC_4_V1-968863744-4096.hdf5',    help='text file with hdf5 data')
+parser.add_argument('-h1',    default='H-H1_LOSC_4_V1-931184640-4096.hdf5',    help='text file with hdf5 data')
+parser.add_argument('-l1',    default='L-L1_LOSC_4_V1-931184640-4096.hdf5',    help='text file with hdf5 data')
 args=parser.parse_args()
 H1=args.h1
 L1=args.l1
+import urllib.request
+file_nameH1=H1
+file_nameL1=L1
+urlL1="https://losc.ligo.org/archive/data/S6/931135488/L-L1_LOSC_4_V1-931184640-4096.hdf5"
+urlH1="https://losc.ligo.org/archive/data/S6/931135488/H-H1_LOSC_4_V1-931184640-4096.hdf5"
+urllib.request.urlretrieve(urlL1, file_nameL1)
+urllib.request.urlretrieve(urlH1, file_nameH1)
 os.system("h5dump -d /strain/Strain -y -w 1 -o "+H1+".txt "+H1)
 os.system("h5dump -d /strain/Strain -y -w 1 -o "+L1+".txt "+L1)
 timeH1=[]
@@ -74,6 +82,8 @@ def readL1(x):
 #        plt.plot(timeL1,strainL1)
         return timeL1
         return strainL1
+os.system("rm "+file_nameH1)
+os.system("rm "+file_nameL1)
 readH1(H1)
 readL1(L1)
 #plt.savefig('raw'+H1+'.png')
