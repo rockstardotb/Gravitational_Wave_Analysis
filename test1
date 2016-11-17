@@ -21,7 +21,7 @@ I=args.i
 F=args.f
 list=[]
 array=np.loadtxt('list.txt',dtype=int)
-list=array[I:F]
+list=array[int(I):int(F)]
 print(list)
 index=I
 for row in list:		
@@ -166,7 +166,7 @@ for row in list:
 	plt.legend(loc='lower left')
 	plt.title('Advanced LIGO WHITENED strain data')
 	plt.savefig('NEW_strain_whitened'+file_nameH1+'.png')
-	plt.show()
+#	plt.show()
 	time_start=0
 	time_end=0
 	# Search through 32 second data for spikes
@@ -215,7 +215,9 @@ for row in list:
 		plt.legend(loc='lower left')
 		plt.title('Advanced LIGO WHITENED strain data')
 		plt.savefig('ZoomedNEW_strain_whitened'+file_nameH1+'.png')
-		plt.show()
+#		plt.show()
 	os.system("rm "+file_nameH1)
 	os.system("rm "+file_nameL1)
 	index+=1
+	plt.clf()
+
