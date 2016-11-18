@@ -24,12 +24,15 @@ array=np.loadtxt('list.txt',dtype=int)
 list=array[int(I):int(F)]
 print(list)
 index=I
+b=931135488
 for row in list:		
 	import urllib.request
 	file_nameH1="H-H1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
 	file_nameL1="L-L1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
-	urlL1="https://losc.ligo.org/archive/data/S6/931135488/L-L1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
-	urlH1="https://losc.ligo.org/archive/data/S6/931135488/H-H1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
+	while row>b+1048576:
+		b+=1048576
+	urlL1="https://losc.ligo.org/archive/data/S6/"+str(b)+"/L-L1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
+	urlH1="https://losc.ligo.org/archive/data/S6/"+str(b)+"/H-H1_LOSC_4_V1-"+str(row)+"-4096.hdf5"
 	urllib.request.urlretrieve(urlL1, file_nameL1)
 	urllib.request.urlretrieve(urlH1, file_nameH1)
 	os.system("h5dump -d /strain/Strain -y -w 1 -o "+file_nameH1+".txt "+file_nameH1)
