@@ -177,6 +177,7 @@ for row in list:
 	time_start=0
 	time_end=0
 	# Search through 32 second data for spikes
+	chi=0.0
 	if np.sum(timeH1)<=2100000:
 		# Index starts where the skipped section ends
 		index=1000
@@ -190,6 +191,7 @@ for row in list:
 					time_start=index-100
 				time_end=index+100
 				index+=1
+				chi+=((y-y1)**2)/y1
 			else:
 				index+=1
 				continue
@@ -207,6 +209,7 @@ for row in list:
 	                                time_start=index-100
 	                        time_end=index+100
 	                        index+=1
+	                        chi+=((y-y1)**2)/y1
 	                else:
 	                        index+=1
 	                        continue
@@ -217,7 +220,7 @@ for row in list:
 		#plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
 		plt.xlim((timeH1[time_start]),(timeH1[time_end]))
 		plt.ylim([-4,4])
-		plt.xlabel('time (s)')
+		plt.xlabel('time (s)\t\tchi='+str(chi))
 		plt.ylabel('whitented strain')
 		plt.legend(loc='lower left')
 		plt.title('Advanced LIGO WHITENED strain data')
