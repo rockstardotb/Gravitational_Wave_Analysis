@@ -204,8 +204,8 @@ for row in list:
 			y3=strain_L1_shift[i-50:i+50]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)
-			if chi1>0.16 or chi1<-0.16:
-				i+=1
+			if chi1>0.5:
+				i+=50
 			else:
 				plt.plot(timeH1[i-50:i+50],y2,'r',label='H1 strain')
 				plt.plot(timeL1[i-50:i+50],y3,'g',label='L1 strain')
@@ -246,8 +246,8 @@ for row in list:
 			y3=strain_L1_shift[i-50:i+50]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)	
-			if chi1>0.16 or chi1<-0.16:
-				i+=1
+			if chi1>0.5:
+				i+=50
 			else:
 				plt.plot(timeH1[i-50:i+50],y2,'r',label='H1 strain')
 				plt.plot(timeL1[i-50:i+50],y3,'g',label='L1 strain')
