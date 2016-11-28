@@ -13,6 +13,9 @@ import argparse
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+c=30
+chi_interval=c/2
+chi_threshold=6
 parser = argparse.ArgumentParser() 
 parser.add_argument('-i',    default=0,    help='starting index of list of 100% data files')
 parser.add_argument('-f',    default=1,    help='ending index of list of 100% data files')
@@ -93,8 +96,8 @@ for row in list:
 		#	plt.clf()	
 		return timeL1
 		return strainL1
-	os.system("rm "+file_nameH1)
-	os.system("rm "+file_nameL1)
+#	os.system("rm "+file_nameH1)
+#	os.system("rm "+file_nameL1)
 	readH1()
 	readL1()
 	#plt.savefig('raw'+H1+'.png')
@@ -177,7 +180,6 @@ for row in list:
 	time_start=0
 	time_end=0
 	# Search through 32 second data for spikes
-	chi=0.0
 	if np.sum(timeH1)<=2100000:
 		# Index starts where the skipped section ends
 		index=1000
@@ -191,24 +193,33 @@ for row in list:
 					time_start=index-100
 				time_end=index+100
 				index+=1
-				chi+=((y-y1)**2)/y1
 			else:
 				index+=1
 				continue
+		#calculate chi-squared of spikes
+		if time_end>time_start:
+			chi=0.0
+			y=strain_H1_whitenbp[time_start+80:time_end-100]
+			y1=strain_L1_shift[time_start+80:time_end-100]
+			for a,b in zip(y,y1):
+				chi+=abs(((a-b)**2)/b)
+		else:
+			continue
+		#Search through noise using chi-squared analysis
 		i=1000
 		y2=[]
 		y3=[]
 		while i<120000:
 			chi1=0
-			y2=strain_H1_whitenbp[i-50:i+50]
-			y3=strain_L1_shift[i-50:i+50]
+			y2=strain_H1_whitenbp[i-int(c):i+int(c)]
+			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)
-			if chi1>0.5:
-				i+=50
+			if chi1>int(chi_threshold):
+				i+=int(chi_interval)
 			else:
-				plt.plot(timeH1[i-50:i+50],y2,'r',label='H1 strain')
-				plt.plot(timeL1[i-50:i+50],y3,'g',label='L1 strain')
+				plt.plot(timeH1[i-50:i+50],strain_H1_whitenbp[i-50:i+50],'r',label='H1 strain')
+				plt.plot(timeL1[i-50:i+50],strain_L1_shift[i-50:i+50],'g',label='L1 strain')
 				plt.ylim([-4,4])
 				#plt.text(timeH1[i-50]+0.005,3,r'Approximate solar mass of final black hole: '+str(format(mass_approx,'0.1f')))
 				plt.text(timeH1[i-50]+0.01,-3,r'chi-squared='+str(chi1))
@@ -217,7 +228,7 @@ for row in list:
 				plt.legend(loc='lower left')
 				plt.title('Advanced LIGO WHITENED strain data: inside noise')
 				plt.savefig('ZoomedNEW_IN_NOISE_strain_whitened'+file_nameH1+str(timeH1[i])+'.png')
-				i+=101
+				i+=2*int(c)+1
 				plt.clf()
 	# This searches through the 4096 second data files
 	else:
@@ -232,25 +243,33 @@ for row in list:
 					time_start=index-100
 				time_end=index+100
 				index+=1
-				chi+=((y-y1)**2)/y1
 			else:
 				index+=1
 				continue
+		#calculate chi-squared of spikes
+		if time_end>time_start:
+			chi=0.0
+			y=strain_H1_whitenbp[time_start+80:time_end-100]
+			y1=strain_L1_shift[time_start+80:time_end-100]
+			for a,b in zip(y,y1):
+				chi+=abs(((a-b)**2)/b)
+		else:
+			continue
 		#search through noise with chi-squared analysis
 		i=4999950
 		y2=[]
 		y3=[]
 		while i<11000050:
 			chi1=0
-			y2=strain_H1_whitenbp[i-50:i+50]
-			y3=strain_L1_shift[i-50:i+50]
+			y2=strain_H1_whitenbp[i-int(c):i+int(c)]
+			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)	
-			if chi1>0.5:
-				i+=50
+			if chi1>int(chi_threshold):
+				i+=int(chi_interval)
 			else:
-				plt.plot(timeH1[i-50:i+50],y2,'r',label='H1 strain')
-				plt.plot(timeL1[i-50:i+50],y3,'g',label='L1 strain')
+				plt.plot(timeH1[i-50:i+50],strain_H1_whitenbp[i-50:i+50],'r',label='H1 strain')
+				plt.plot(timeL1[i-50:i+50],strain_L1_shift[i-50:i+50],'g',label='L1 strain')
 				plt.ylim([-4,4])
 				#plt.text(timeH1[i-50]+0.005,3,r'Approximate solar mass of final black hole: '+str(format(mass_approx,'0.1f')))
 				plt.text(timeH1[i-50]+0.01,-3,r'chi-squared='+str(chi1))
@@ -259,17 +278,18 @@ for row in list:
 				plt.legend(loc='lower left')
 				plt.title('Advanced LIGO WHITENED strain data: inside noise')
 				plt.savefig('ZoomedNEW_IN_NOISE_strain_whitened'+file_nameH1+str(timeH1[i])+'.png')
-				i+=101
+				i+=2*int(c)+1
 				plt.clf()
 	# Plot only if a spike above the specified threshold was found
 	if time_end > time_start:
 		maxH1=np.amax(strain_H1_whitenbp[time_start:time_end])
 		maxL1=np.amax(strain_L1_shift[time_start:time_end])
-		if chi<0.3 or np.amax(strain_H1_whitenbp)>4 or np.amax(strain_L1_shift):
+		if np.amax(strain_H1_whitenbp)>4 or np.amax(strain_L1_shift):
 			plt.plot(timeH1,strain_H1_whitenbp,'r',label='H1 strain')
 			plt.plot(timeL1,strain_L1_shift,'g',label='L1 strain')
 			#plt.plot(NRtime+0.002,NR_H1_whitenbp,'k',label='matched NR waveform')
 			plt.xlim((timeH1[time_start]),(timeH1[time_end]))
+			# Distinguish bursts from merger candidates so code doesn't approximate mass
 			if maxH1>4 or maxL1>4:
 				print(-1*np.amax(strain_H1_whitenbp[time_start:time_end]))
 				print(-np.amax(strain_L1_shift[time_start:time_end]))
@@ -279,6 +299,7 @@ for row in list:
 				if maxL1>maxH1:
 					plt.ylim([(-1*maxL1)-1,(maxL1)+1])
 					plt.text(timeH1[time_start]+0.03,(-1*maxL1),r'chi-squared='+str(format(chi,'0.2f')))
+			# Approximate mass by using ratio of mass/period compared to mass/period for event
 			else:
 				zero_search=time_end-100
 				while strain_H1_whitenbp[zero_search]>0:
