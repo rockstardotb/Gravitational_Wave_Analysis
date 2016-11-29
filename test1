@@ -15,11 +15,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 # The following three variables are for tweaking the chi_square search parameters.
 ##########
-c=8	#This effects the span for which index values much match the chi_threshold
+c=12	#This effects the span for which index values much match the chi_threshold
 	#i.e., strain_H1_whitenbp[i-c:i+c]
-chi_interval=c/4	#The program moves the search forward by c/2 index so that
+chi_interval=c/2	#The program moves the search forward by c/2 index so that
 			#there is overlap and nothing is missed
-chi_threshold=0.02		#Anything below this threshold is zoomed in on and saved
+chi_threshold=0.5		#Anything below this threshold is zoomed in on and saved
 ###############
 parser = argparse.ArgumentParser() 
 parser.add_argument('-i',    default=0,    help='starting index of list of 100% data files')
@@ -60,20 +60,21 @@ for row in list:
 		with open(file_nameH1+".txt", 'r') as f:
 			for row in f:
 				if row==' ':
+					print("AAAAaaahhhh")
 					continue
 				else:
 					comma_strainH1.append(row.strip())
 			filter(None, comma_strainH1)
-			os.system("rm "+file_nameH1+".txt")	
-			for row in comma_strainH1:
-				if row=="NaN":
-					i+=1
-				elif row=="":
-					continue
-				else:
-					timeH1.append(float(0.00024414063955*i))
-					strainH1.append(float(row.strip(',')))
-					i+=1
+		os.system("rm "+file_nameH1+".txt")	
+		for row in comma_strainH1:
+			if row=="NaN":
+				i+=1
+			elif row=="":
+				continue
+			else:
+				timeH1.append(float(0.00024414063955*i))
+				strainH1.append(float(row.strip(',')))
+				i+=1
 	#	plt.plot(timeH1,strainH1)
 	#	plt.clf()
 		return timeH1
@@ -88,18 +89,18 @@ for row in list:
 			for row in f:
 				comma_strainL1.append(row.strip())
 			filter(None, comma_strainL1)
-			os.system("rm "+file_nameL1+".txt")
-			for row in comma_strainL1:
-				if row=="NaN":
-					i+=1
-				elif row=="":
-					continue
-				else:
-					timeL1.append(float(0.00024414063955*i))
-					strainL1.append(float(row.strip(',')))
-					i+=1
-		#       plt.plot(timeL1,strainL1)
-		#	plt.clf()	
+		os.system("rm "+file_nameL1+".txt")
+		for row in comma_strainL1:
+			if row=="NaN":
+				i+=1
+			elif row=="":
+				continue
+			else:
+				timeL1.append(float(0.00024414063955*i))
+				strainL1.append(float(row.strip(',')))
+				i+=1
+	#       plt.plot(timeL1,strainL1)
+	#	plt.clf()	
 		return timeL1
 		return strainL1
 #	os.system("rm "+file_nameH1)
