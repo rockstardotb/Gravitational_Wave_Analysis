@@ -19,7 +19,8 @@ c=12	#This effects the span for which index values much match the chi_threshold
 	#i.e., strain_H1_whitenbp[i-c:i+c]
 chi_interval=c/2	#The program moves the search forward by c/2 index so that
 			#there is overlap and nothing is missed
-chi_threshold=0.5		#Anything below this threshold is zoomed in on and saved
+chi_threshold=0.7
+		#Anything below this threshold is zoomed in on and saved
 ###############
 parser = argparse.ArgumentParser() 
 parser.add_argument('-i',    default=0,    help='starting index of list of 100% data files')
@@ -209,7 +210,7 @@ for row in list:
 			y=strain_H1_whitenbp[time_start+80:time_end-100]
 			y1=strain_L1_shift[time_start+80:time_end-100]
 			for a,b in zip(y,y1):
-				chi+=abs(((a-b)**2)/b)
+				chi+=abs(((a-b)**2))
 		else:
 			continue
 		#Search through noise using chi-squared analysis
@@ -221,7 +222,7 @@ for row in list:
 			y2=strain_H1_whitenbp[i-int(c):i+int(c)]
 			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
-				chi1+=abs(((a-b)**2)/b)
+				chi1+=abs(((a-b)**2))
 			if chi1>float(chi_threshold):
 				i+=int(chi_interval)
 				chi1=0
@@ -261,7 +262,7 @@ for row in list:
 			y=strain_H1_whitenbp[time_start+80:time_end-100]
 			y1=strain_L1_shift[time_start+80:time_end-100]
 			for a,b in zip(y,y1):
-				chi+=abs(((a-b)**2)/b)
+				chi+=abs(((a-b)**2))
 		else:
 			continue
 		#search through noise with chi-squared analysis
@@ -273,7 +274,7 @@ for row in list:
 			y2=strain_H1_whitenbp[i-int(c):i+int(c)]
 			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
-				chi1+=abs(((a-b)**2)/b)	
+				chi1+=abs(((a-b)**2))	
 			if chi1>float(chi_threshold):
 				i+=int(chi_interval)
 				chi1=0
