@@ -15,11 +15,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 # The following three variables are for tweaking the chi_square search parameters.
 ##########
-c=40	#This effects the span for which index values much match the chi_threshold
+c=8	#This effects the span for which index values much match the chi_threshold
 	#i.e., strain_H1_whitenbp[i-c:i+c]
 chi_interval=c/4	#The program moves the search forward by c/2 index so that
 			#there is overlap and nothing is missed
-chi_threshold=6		#Anything below this threshold is zoomed in on and saved
+chi_threshold=0.02		#Anything below this threshold is zoomed in on and saved
 ###############
 parser = argparse.ArgumentParser() 
 parser.add_argument('-i',    default=0,    help='starting index of list of 100% data files')
@@ -221,8 +221,9 @@ for row in list:
 			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)
-			if chi1>int(chi_threshold):
+			if chi1>float(chi_threshold):
 				i+=int(chi_interval)
+				chi1=0
 			else:
 				plt.plot(timeH1[i-100:i+100],strain_H1_whitenbp[i-100:i+100],'r',label='H1 strain')
 				plt.plot(timeL1[i-100:i+100],strain_L1_shift[i-100:i+100],'g',label='L1 strain')
@@ -235,6 +236,7 @@ for row in list:
 				plt.title('Advanced LIGO WHITENED strain data: inside noise')
 				plt.savefig('ZoomedNEW_IN_NOISE_strain_whitened'+file_nameH1+str(timeH1[i])+'.png')
 				i+=2*int(c)+1
+				chi1=0
 				plt.clf()
 	# This searches through the 4096 second data files
 	else:
@@ -271,8 +273,9 @@ for row in list:
 			y3=strain_L1_shift[i-int(c):i+int(c)]
 			for a,b in zip(y2,y3):
 				chi1+=abs(((a-b)**2)/b)	
-			if chi1>int(chi_threshold):
+			if chi1>float(chi_threshold):
 				i+=int(chi_interval)
+				chi1=0
 			else:
 				plt.plot(timeH1[i-100:i+100],strain_H1_whitenbp[i-100:i+100],'r',label='H1 strain')
 				plt.plot(timeL1[i-100:i+100],strain_L1_shift[i-100:i+100],'g',label='L1 strain')
@@ -285,6 +288,7 @@ for row in list:
 				plt.title('Advanced LIGO WHITENED strain data: inside noise')
 				plt.savefig('ZoomedNEW_IN_NOISE_strain_whitened'+file_nameH1+str(timeH1[i])+'.png')
 				i+=2*int(c)+1
+				chi1=0
 				plt.clf()
 	# Plot only if a spike above the specified threshold was found
 	if time_end > time_start:
