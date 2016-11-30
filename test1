@@ -206,11 +206,41 @@ for row in list:
 				continue
 		#calculate chi-squared of spikes
 		if time_end>time_start:
+			t_list=[]
+			chi_list=[]
 			chi=0.0
-			y=strain_H1_whitenbp[time_start+80:time_end-100]
-			y1=strain_L1_shift[time_start+80:time_end-100]
-			for a,b in zip(y,y1):
-				chi+=abs(((a-b)**2))
+			chit1=0.0
+			chit2=0.0
+			chit3=0.0
+			chit_1=0.0
+			chit_2=0.0
+			chit_3=0.0
+			def chi_32(t):
+				chit=0.0
+				y=strain_H1_whitenbp[time_start+80+t:time_end-100+t]
+				y1=strain_L1_shift[time_start+80+t:time_end-100+t]
+				for a,b in zip(y,y1):
+					chit+=abs(((a-b)**2))
+				return chit
+			t=0
+			chi=chi_32(t)
+			t=1
+			chit1=chi_32(t)
+			t=2
+			chit2=chi_32(t)
+			t=3
+			chit3=chi_32(t)
+			t=-1
+			chit_1=chi_32(t)
+			t=-2
+			chit_2=chi_32(t)
+			t=-3
+			chit_3=chi_32(t)
+			t_list=[-3*0.00024414063955+0.007,-2*0.00024414063955+0.007,-1*0.00024414063955+0.007,0*0.00024414063955+0.007,1*0.00024414063955+0.007,2*0.00024414063955+0.007,3*0.00024414063955+0.007]
+			chi_list=[chit_3,chit_2,chit_1,chi,chit1,chit2,chit3]
+			plt.plot(t_list,chi_list, 'ro')
+			plt.savefig('chiVStshift'+file_nameH1+'.png')
+			plt.clf()
 		else:
 			continue
 		#Search through noise using chi-squared analysis
@@ -258,11 +288,41 @@ for row in list:
 				continue
 		#calculate chi-squared of spikes
 		if time_end>time_start:
+			t_list=[]
+			chi_list=[]
 			chi=0.0
-			y=strain_H1_whitenbp[time_start+80:time_end-100]
-			y1=strain_L1_shift[time_start+80:time_end-100]
-			for a,b in zip(y,y1):
-				chi+=abs(((a-b)**2))
+			chit1=0.0
+			chit2=0.0
+			chit3=0.0
+			chit_1=0.0
+			chit_2=0.0
+			chit_3=0.0
+			def chi_32(t):
+				chit=0.0
+				y=strain_H1_whitenbp[time_start+80+t:time_end-100+t]
+				y1=strain_L1_shift[time_start+80+t:time_end-100+t]
+				for a,b in zip(y,y1):
+					chit+=abs(((a-b)**2))
+				return chit
+			t=0
+			chi=chi_32(t)
+			t=1
+			chit1=chi_32(t)
+			t=2
+			chit2=chi_32(t)
+			t=3
+			chit3=chi_32(t)
+			t=-1
+			chit_1=chi_32(t)
+			t=-2
+			chit_2=chi_32(t)
+			t=-3
+			chit_3=chi_32(t)
+			t_list=[-3*0.00024414063955+0.007,-2*0.00024414063955+0.007,-1*0.00024414063955+0.007,0*0.00024414063955+0.007,1*0.00024414063955+0.007,2*0.00024414063955+0.007,3*0.00024414063955+0.007]
+			chi_list=[chit_3,chit_2,chit_1,chi,chit1,chit2,chit3]
+			plt.plot(t_list,chi_list, 'ro')
+			plt.savefig('chiVStshift'+file_nameH1+'.png')
+			plt.clf()
 		else:
 			continue
 		#search through noise with chi-squared analysis
