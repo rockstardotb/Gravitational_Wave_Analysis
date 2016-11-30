@@ -104,8 +104,8 @@ for row in list:
 	#	plt.clf()	
 		return timeL1
 		return strainL1
-#	os.system("rm "+file_nameH1)
-#	os.system("rm "+file_nameL1)
+	os.system("rm "+file_nameH1)
+	os.system("rm "+file_nameL1)
 	readH1()
 	readL1()
 	#plt.savefig('raw'+H1+'.png')
@@ -333,6 +333,6 @@ for row in list:
 			plt.savefig('ZoomedNEW_strain_whitened'+file_nameH1+'.png')
 	#		plt.show()
 		plt.clf()
-		os.system("rm "+file_nameH1)
-		os.system("rm "+file_nameL1)
-
+#		os.system("rm "+file_nameH1)
+#		os.system("rm "+file_nameL1)
+	index+=1
