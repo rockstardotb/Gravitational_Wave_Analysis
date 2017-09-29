@@ -26,3 +26,5 @@ first six files in list.txt
 # Program Output
 The program saves a whitened png file containing superposed data from both detectors.
 If a gravitational wave candidate is found, the program saves an additional png file, zoomed in on the location of the candidate.
+
+Note, the full anaysis takes about 5 minutes per pair of Ligo data files, due to the size and number of data points
