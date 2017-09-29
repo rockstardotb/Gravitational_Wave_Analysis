@@ -1,8 +1,9 @@
 # Gravitational_Wave_Analysis
-Analyze gravitational-wave data, find signals, and study their parameters. 
-Pulls strain data from the two logo detectors for 100% quality data files for the S6 data release. 
+Purpose: Analyze gravitational-wave data, find signals, and study their parameters. 
+The program pulls strain data from the two LIGO detectors for 100% quality data files for the S6 data release. 
 Portions of the code are from LIGO's binary at https://github.com/ligo-cbc/pycbc. 
-Program differs from LIGO's in that it searches for matching wave characters rather than filtering data with known wavelengths
+The program differs from LIGO's in that it searches for matching wave characters rather than filtering data with known wavelengths.
+It also approximates the mass of the wave source.
 
 # This program uses OSX-terminal specific commands. 
 If using another operating system, run the program in an OSX-terminal emulator
