@@ -19,7 +19,7 @@ file in list.txt
                      
 > python ligo_view -i 0 -f 5  
 
-downloads, reads, and analyzes strain data for the first six H1 and L1 detector data associated with
+downloads, reads, and analyzes strain data for the first 5 H1 and L1 detector data associated with
 first six files in list.txt
                                
                                
